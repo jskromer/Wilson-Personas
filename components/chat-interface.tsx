@@ -120,7 +120,7 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
               Back to Selection
             </Button>
             <div className="flex items-center gap-2">
-              <BarChart3 className="h-6 w-6 text-blue-600" />
+              <img src="/images/wilson.png" alt="Wilson" className="h-6 w-6" />
               <h1 className="text-xl font-semibold">Ask Wilson about M&V</h1>
             </div>
           </div>
