@@ -39,44 +39,62 @@ export async function POST(request: NextRequest) {
       fullContext = `I am a ${persona} working in ${region}. Language: ${language}. ${context || ''}`
     }
 
-    // Check if API endpoint is configured
+    // Check if API endpoint is configured and valid
     const apiEndpoint = process.env.CHATBOT_API_ENDPOINT
     let data: any
 
-    if (apiEndpoint && apiEndpoint !== 'YOUR_SHARED_API_ENDPOINT') {
-      // Call your shared chatbot API
-      const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.CHATBOT_API_KEY}`,
-          'X-Source-Application': source,
-        },
-        body: JSON.stringify({
-          message,
-          context: fullContext,
-          sessionId: currentSessionId,
-          metadata: {
-            persona,
-            region,
-            language,
-            source,
-            timestamp: new Date().toISOString()
-          }
-        }),
-      })
+    if (apiEndpoint && 
+        apiEndpoint !== 'YOUR_SHARED_API_ENDPOINT' && 
+        apiEndpoint.startsWith('http') && 
+        apiEndpoint.length > 10) {
+      
+      try {
+        // Call your shared chatbot API
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.CHATBOT_API_KEY}`,
+            'X-Source-Application': source,
+          },
+          body: JSON.stringify({
+            message,
+            context: fullContext,
+            sessionId: currentSessionId,
+            metadata: {
+              persona,
+              region,
+              language,
+              source,
+              timestamp: new Date().toISOString()
+            }
+          }),
+        })
 
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`)
+        if (!response.ok) {
+          console.log(`API endpoint responded with ${response.status}, using fallback`)
+          throw new Error(`API request failed: ${response.status}`)
+        }
+
+        data = await response.json()
+      } catch (error) {
+        console.log('API call failed, using fallback response:', error)
+        // Fall through to fallback response
+        data = {
+          response: `Thank you for your question about "${message}". I'm an M&V Intelligence assistant for ${persona} in ${region}. I understand you're asking in ${language}. 
+
+[Demo Mode] Your API endpoint had an issue, so I'm showing a demonstration response. To connect to your actual chatbot API, please verify your CHATBOT_API_ENDPOINT in the Secrets tool.
+
+Your context: ${fullContext}`,
+          sessionId: currentSessionId
+        }
       }
-
-      data = await response.json()
     } else {
       // Fallback response when API is not configured
       data = {
         response: `Thank you for your question about "${message}". I'm an M&V Intelligence assistant for ${persona} in ${region}. I understand you're asking in ${language}. 
 
-This is a demonstration response - to connect to your actual chatbot API, please configure the CHATBOT_API_ENDPOINT environment variable in the Secrets tool.
+[Demo Mode] This is a demonstration response - to connect to your actual chatbot API, please configure the CHATBOT_API_ENDPOINT environment variable in the Secrets tool.
 
 Your context: ${fullContext}`,
         sessionId: currentSessionId
