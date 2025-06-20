@@ -83,7 +83,7 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
           <img src="/images/wilson.png" alt="Wilson" className="h-8 w-8" />
           <h1 className="text-3xl font-bold text-gray-900">Ask Wilson</h1>
         </div>
-        <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant</p>
+        <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant.  Select your language, region and role - then access the customized chatbot below. </p>
       </div>
 
       {/* Language and Region Selection */}
