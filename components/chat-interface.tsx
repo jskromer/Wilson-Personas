@@ -27,24 +27,20 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
     {
       id: "1",
       role: "assistant",
-      content: `Hello! I'm your M&V Intelligence assistant, configured for ${persona} in ${region}. I'll now connect you to the M&V Expert Advisor ChatGPT bot for personalized assistance. Click the button below to start chatting with the expert system.`,
+      content: `Hello! I'm your M&V Intelligence assistant, configured for ${persona} in ${region}. I'm connected to our unified chatbot system and ready to help with your questions.`,
       timestamp: new Date(),
     },
   ])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [sessionId, setSessionId] = useState<string | null>(null)
 
   const handleSendMessage = async () => {
     if (!input.trim()) return
 
-    // Redirect to ChatGPT bot with context
-    const chatUrl = "https://chatgpt.com/g/g-67f5573985648191b7f0579ec68da4ae-m-v-expert-advisor"
-    const contextMessage = `I am a ${persona} working in ${region}, and I have this question: ${input}`
+    setIsLoading(true)
 
-    // Open in new tab with context
-    window.open(chatUrl, "_blank")
-
-    // Add user message to show what was sent
+    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
@@ -52,16 +48,58 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
       timestamp: new Date(),
     }
 
-    const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content:
-        "I've opened the M&V Expert Advisor in a new tab. Please continue your conversation there for the most accurate and up-to-date assistance.",
-      timestamp: new Date(),
-    }
-
-    setMessages((prev) => [...prev, userMessage, assistantMessage])
+    setMessages((prev) => [...prev, userMessage])
+    const currentInput = input
     setInput("")
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: currentInput,
+          persona,
+          region,
+          language,
+          context: `M&V Intelligence conversation`,
+          source: 'mv-intelligence',
+          sessionId,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to get response')
+      }
+
+      // Store session ID for continuity
+      if (data.sessionId && !sessionId) {
+        setSessionId(data.sessionId)
+      }
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: data.response || "I'm here to help with your M&V questions!",
+        timestamp: new Date(),
+      }
+
+      setMessages((prev) => [...prev, assistantMessage])
+    } catch (error) {
+      console.error('Chat API error:', error)
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "Sorry, there was an error connecting to the chatbot. Please try again.",
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -112,18 +150,7 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
             </div>
           ))}
 
-          {messages.length === 1 && (
-            <div className="flex justify-center mb-4">
-              <Button
-                onClick={() =>
-                  window.open("https://chatgpt.com/g/g-67f5573985648191b7f0579ec68da4ae-m-v-expert-advisor", "_blank")
-                }
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3"
-              >
-                Open M&V Expert Advisor ChatGPT →
-              </Button>
-            </div>
-          )}
+          
 
           {isLoading && (
             <div className="flex justify-start">
