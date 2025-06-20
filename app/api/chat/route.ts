@@ -72,7 +72,19 @@ export async function POST(request: NextRequest) {
         })
 
         if (!response.ok) {
+          const errorText = await response.text()
           console.log(`API endpoint responded with ${response.status}, using fallback`)
+          console.log('Request sent:', JSON.stringify({
+            url: apiEndpoint,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': process.env.CHATBOT_API_KEY ? 'Bearer [REDACTED]' : 'None',
+              'X-Source-Application': source,
+            },
+            bodyKeys: ['message', 'context', 'sessionId', 'metadata']
+          }, null, 2))
+          console.log('Error response:', errorText)
           throw new Error(`API request failed: ${response.status}`)
         }
 
