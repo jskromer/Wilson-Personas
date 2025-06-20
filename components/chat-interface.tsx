@@ -27,7 +27,7 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
     {
       id: "1",
       role: "assistant",
-      content: `Hello! I'm your M&V Intelligence assistant, configured for ${persona} in ${region}. I'm connected to our unified chatbot system and ready to help with your questions.`,
+      content: `Hello! I'm Wilson, your M&V Intelligence assistant, configured for ${persona} in ${region}. I'm connected to our unified chatbot system and ready to help with your questions.`,
       timestamp: new Date(),
     },
   ])
@@ -121,7 +121,7 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
             </Button>
             <div className="flex items-center gap-2">
               <BarChart3 className="h-6 w-6 text-blue-600" />
-              <h1 className="text-xl font-semibold">M&V Intelligence</h1>
+              <h1 className="text-xl font-semibold">Ask Wilson about M&V</h1>
             </div>
           </div>
           <div className="text-sm text-gray-600">
