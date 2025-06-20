@@ -85,19 +85,37 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
         </div>
       </div>
 
-      {/* Language Selection */}
-      <div className="mb-8">
-        <Select value={language} onValueChange={setLanguage}>
-          <SelectTrigger className="w-full max-w-xs">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="English">English</SelectItem>
-            <SelectItem value="Spanish">Spanish</SelectItem>
-            <SelectItem value="French">French</SelectItem>
-            <SelectItem value="German">German</SelectItem>
-          </SelectContent>
-        </Select>
+      {/* Language and Region Selection */}
+      <div className="mb-8 flex flex-col sm:flex-row gap-4">
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="English">English</SelectItem>
+              <SelectItem value="Spanish">Spanish</SelectItem>
+              <SelectItem value="French">French</SelectItem>
+              <SelectItem value="German">German</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
+          <Select value={region} onValueChange={setRegion}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="North America">North America</SelectItem>
+              <SelectItem value="Europe">Europe</SelectItem>
+              <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
+              <SelectItem value="Latin America">Latin America</SelectItem>
+              <SelectItem value="Africa">Africa</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* Persona Selection */}
@@ -157,24 +175,13 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
-              <Select value={region} onValueChange={setRegion}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="North America">North America</SelectItem>
-                  <SelectItem value="Europe">Europe</SelectItem>
-                  <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
-                  <SelectItem value="Latin America">Latin America</SelectItem>
-                  <SelectItem value="Africa">Africa</SelectItem>
-                </SelectContent>
-              </Select>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
+              <div className="px-3 py-2 bg-white border border-gray-300 rounded-md">{language}</div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
-              <div className="px-3 py-2 bg-white border border-gray-300 rounded-md">{language}</div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
+              <div className="px-3 py-2 bg-white border border-gray-300 rounded-md">{region}</div>
             </div>
 
             <div>
