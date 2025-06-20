@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Wilson\'s Advice - M&V Intelligence',
+  title: 'Ask Wilson - M&V Intelligence',
   description: 'AI-powered measurement and verification assistant',
   generator: 'v0.dev',
 }
