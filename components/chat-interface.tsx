@@ -141,7 +141,7 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
                 }`}
               >
                 <CardContent className="p-4">
-                  <p className="text-sm">{message.content}</p>
+                  <div className="text-sm whitespace-pre-wrap">{message.content}</div>
                   <p className={`text-xs mt-2 ${message.role === "user" ? "text-blue-100" : "text-gray-500"}`}>
                     {message.timestamp.toLocaleTimeString()}
                   </p>

@@ -81,22 +81,42 @@ export async function POST(request: NextRequest) {
         console.log('API call failed, using fallback response:', error)
         // Fall through to fallback response
         data = {
-          response: `Thank you for your question about "${message}". I'm an M&V Intelligence assistant for ${persona} in ${region}. I understand you're asking in ${language}. 
+          response: `Thank you for your question: "${message}"
 
-[Demo Mode] Your API endpoint had an issue, so I'm showing a demonstration response. To connect to your actual chatbot API, please verify your CHATBOT_API_ENDPOINT in the Secrets tool.
+🤖 M&V Intelligence Assistant
+• Persona: ${persona}
+• Region: ${region}
+• Language: ${language}
 
-Your context: ${fullContext}`,
+⚠️ Demo Mode Active
+Your API endpoint returned an error, so this is a demonstration response.
+
+To connect to your actual chatbot:
+• Check your CHATBOT_API_ENDPOINT in the Secrets tool
+• Ensure your other chatbot accepts POST requests at /api/chat
+• Verify the endpoint URL is correct
+
+Context: ${fullContext}`,
           sessionId: currentSessionId
         }
       }
     } else {
       // Fallback response when API is not configured
       data = {
-        response: `Thank you for your question about "${message}". I'm an M&V Intelligence assistant for ${persona} in ${region}. I understand you're asking in ${language}. 
+        response: `Thank you for your question: "${message}"
 
-[Demo Mode] This is a demonstration response - to connect to your actual chatbot API, please configure the CHATBOT_API_ENDPOINT environment variable in the Secrets tool.
+🤖 M&V Intelligence Assistant
+• Persona: ${persona}
+• Region: ${region}
+• Language: ${language}
 
-Your context: ${fullContext}`,
+📋 Demo Mode
+This is a demonstration response. To connect to your actual chatbot API:
+• Configure CHATBOT_API_ENDPOINT in the Secrets tool
+• Add your API key if required
+• Test the connection
+
+Context: ${fullContext}`,
         sessionId: currentSessionId
       }
     }
