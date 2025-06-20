@@ -82,6 +82,7 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
         <div className="flex items-center justify-center gap-2 mb-4">
           <img src="/images/wilson.png" alt="Wilson" className="h-8 w-8" />
           <h1 className="text-3xl font-bold text-gray-900">Ask Wilson</h1>
+          <h2
         </div>
       </div>
 
