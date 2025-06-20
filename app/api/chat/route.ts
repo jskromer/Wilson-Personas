@@ -58,16 +58,19 @@ export async function POST(request: NextRequest) {
             'X-Source-Application': source,
           },
           body: JSON.stringify({
-            message,
-            context: fullContext,
-            sessionId: currentSessionId,
-            metadata: {
-              persona,
-              region,
-              language,
-              source,
-              timestamp: new Date().toISOString()
-            }
+            model: "gpt-3.5-turbo",
+            messages: [
+              {
+                role: "system",
+                content: `You are Wilson, an M&V (Measurement & Verification) Intelligence assistant. ${fullContext}`
+              },
+              {
+                role: "user", 
+                content: message
+              }
+            ],
+            max_tokens: 500,
+            temperature: 0.7
           }),
         })
 
@@ -134,7 +137,7 @@ Context: ${fullContext}`,
     }
 
     const chatResponse: ChatResponse = {
-      response: data.response || data.message || "I'm here to help!",
+      response: data.choices?.[0]?.message?.content || data.response || data.message || "I'm here to help!",
       sessionId: currentSessionId,
       timestamp: new Date().toISOString(),
       source
