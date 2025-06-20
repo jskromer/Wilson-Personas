@@ -81,7 +81,7 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
           <BarChart3 className="h-8 w-8 text-blue-600" />
-          <h1 className="text-3xl font-bold text-gray-900">M&V Intelligence</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Wilson's Advice</h1>
         </div>
       </div>
 
