@@ -1,9 +1,9 @@
-
 "use client"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BarChart3, TrendingUp, Scale, Briefcase, GraduationCap, Building } from "lucide-react"
 
 interface PersonaSelectionProps {
@@ -63,9 +63,6 @@ const personas = [
   },
 ]
 
-const languages = ["English", "Spanish", "French", "German"]
-const regions = ["North America", "Europe", "Asia Pacific", "Latin America", "Africa"]
-
 export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage }: PersonaSelectionProps) {
   const [selectedPersona, setSelectedPersona] = useState("mv-specialist")
   const [region, setRegion] = useState(selectedRegion)
@@ -83,12 +80,10 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
       {/* Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-bold">W</span>
-          </div>
+          <img src="/images/wilson.png" alt="Wilson" className="h-8 w-8" />
           <h1 className="text-3xl font-bold text-gray-900">Ask Wilson</h1>
         </div>
-        <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant. Select your language, region and role - then access the customized chatbot below.</p>
+        <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant.  Select your language, region and role - then access the customized chatbot below. </p>
         
         {/* Demo Notice */}
         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
@@ -100,7 +95,8 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
           </div>
           <p className="text-red-700 text-sm">
             This is a demonstration of the Wilson M&V Intelligence chatbot interface. 
-            This chatbot is meant to demonstrate the concept of persona-based conversations.
+            This chatbot is meant to demonstrate the concept of persona-based conversations.  In a real-world application, the chatbot would be integrated with a backend system to provide customized real-time responses and data. I hope to get Steve to build this out in the future.
+      
           </p>
         </div>
       </div>
@@ -109,27 +105,32 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
       <div className="mb-8 flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
-          <select 
-            value={language} 
-            onChange={(e) => setLanguage(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {languages.map((lang) => (
-              <option key={lang} value={lang}>{lang}</option>
-            ))}
-          </select>
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="English">English</SelectItem>
+              <SelectItem value="Spanish">Spanish</SelectItem>
+              <SelectItem value="French">French</SelectItem>
+              <SelectItem value="German">German</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
-          <select 
-            value={region} 
-            onChange={(e) => setRegion(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {regions.map((reg) => (
-              <option key={reg} value={reg}>{reg}</option>
-            ))}
-          </select>
+          <Select value={region} onValueChange={setRegion}>
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="North America">North America</SelectItem>
+              <SelectItem value="Europe">Europe</SelectItem>
+              <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
+              <SelectItem value="Latin America">Latin America</SelectItem>
+              <SelectItem value="Africa">Africa</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
