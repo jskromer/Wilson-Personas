@@ -1,9 +1,9 @@
+
 "use client"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BarChart3, TrendingUp, Scale, Briefcase, GraduationCap, Building } from "lucide-react"
 
 interface PersonaSelectionProps {
@@ -105,32 +105,30 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
       <div className="mb-8 flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
-          <Select value={language} onValueChange={setLanguage}>
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="English">English</SelectItem>
-              <SelectItem value="Spanish">Spanish</SelectItem>
-              <SelectItem value="French">French</SelectItem>
-              <SelectItem value="German">German</SelectItem>
-            </SelectContent>
-          </Select>
+          <select 
+            value={language} 
+            onChange={(e) => setLanguage(e.target.value)}
+            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="English">English</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+            <option value="German">German</option>
+          </select>
         </div>
         <div className="flex-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
-          <Select value={region} onValueChange={setRegion}>
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="North America">North America</SelectItem>
-              <SelectItem value="Europe">Europe</SelectItem>
-              <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
-              <SelectItem value="Latin America">Latin America</SelectItem>
-              <SelectItem value="Africa">Africa</SelectItem>
-            </SelectContent>
-          </Select>
+          <select 
+            value={region} 
+            onChange={(e) => setRegion(e.target.value)}
+            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="North America">North America</option>
+            <option value="Europe">Europe</option>
+            <option value="Asia Pacific">Asia Pacific</option>
+            <option value="Latin America">Latin America</option>
+            <option value="Africa">Africa</option>
+          </select>
         </div>
       </div>
 
