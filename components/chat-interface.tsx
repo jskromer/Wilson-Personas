@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ArrowLeft, Send, BarChart3 } from "lucide-react"
+import { AnalyticsDashboard } from "@/components/analytics-dashboard"
 
 interface ChatInterfaceProps {
   persona: string
@@ -34,6 +35,7 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [showAnalytics, setShowAnalytics] = useState(false)
 
   const handleSendMessage = async () => {
     if (!input.trim()) return
@@ -109,6 +111,10 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
     }
   }
 
+  if (showAnalytics) {
+    return <AnalyticsDashboard onClose={() => setShowAnalytics(false)} />
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -124,8 +130,19 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
               <h1 className="text-xl font-semibold">Ask Wilson about M&V</h1>
             </div>
           </div>
-          <div className="text-sm text-gray-600">
-            {persona} • {region} • {language}
+          <div className="flex items-center gap-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowAnalytics(true)}
+              className="flex items-center gap-2"
+            >
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </Button>
+            <div className="text-sm text-gray-600">
+              {persona} • {region} • {language}
+            </div>
           </div>
         </div>
       </div>

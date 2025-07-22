@@ -1,5 +1,6 @@
 
 import { NextRequest, NextResponse } from 'next/server'
+import { createChatSession, saveChatMessage, initializeDatabase } from '@/lib/database'
 
 interface ChatRequest {
   message: string
@@ -19,7 +20,12 @@ interface ChatResponse {
 }
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now()
+  
   try {
+    // Initialize database on first request
+    await initializeDatabase()
+    
     const { 
       message, 
       persona, 
@@ -32,6 +38,14 @@ export async function POST(request: NextRequest) {
 
     // Generate session ID if not provided
     const currentSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+    // Create or update chat session in database
+    if (persona && region && language) {
+      await createChatSession(currentSessionId, persona, region, language)
+    }
+
+    // Save user message to database
+    await saveChatMessage(currentSessionId, 'user', message)
 
     // Build context based on source
     let fullContext = context || ''
@@ -136,8 +150,14 @@ Context: ${fullContext}`,
       }
     }
 
+    const responseTime = Date.now() - startTime
+    const responseContent = data.choices?.[0]?.message?.content || data.response || data.message || "I'm here to help!"
+    
+    // Save assistant response to database
+    await saveChatMessage(currentSessionId, 'assistant', responseContent, responseTime)
+
     const chatResponse: ChatResponse = {
-      response: data.choices?.[0]?.message?.content || data.response || data.message || "I'm here to help!",
+      response: responseContent,
       sessionId: currentSessionId,
       timestamp: new Date().toISOString(),
       source
