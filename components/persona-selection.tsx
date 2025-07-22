@@ -93,7 +93,7 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
             </div>
             <h3 className="text-lg font-semibold text-blue-800">Demo Application</h3>
           </div>
-          <p className="text-blue-700 text-sm">
+          <p className="text-red-700 text-sm">
             This is a demonstration of the Wilson M&V Intelligence chatbot interface. 
             The system showcases persona-based conversations but requires API credentials to connect to a live AI service.
           </p>
