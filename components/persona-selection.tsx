@@ -84,6 +84,20 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
           <h1 className="text-3xl font-bold text-gray-900">Ask Wilson</h1>
         </div>
         <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant.  Select your language, region and role - then access the customized chatbot below. </p>
+        
+        {/* Demo Notice */}
+        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
+          <div className="flex items-center gap-2 justify-center mb-2">
+            <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+              <span className="text-white text-xs">ℹ️</span>
+            </div>
+            <h3 className="text-lg font-semibold text-blue-800">Demo Application</h3>
+          </div>
+          <p className="text-blue-700 text-sm">
+            This is a demonstration of the Wilson M&V Intelligence chatbot interface. 
+            The system showcases persona-based conversations but requires API credentials to connect to a live AI service.
+          </p>
+        </div>
       </div>
 
       {/* Language and Region Selection */}
