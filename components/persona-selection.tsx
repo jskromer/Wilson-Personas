@@ -109,7 +109,10 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
           </div>
           <p className="text-red-700 text-sm">
             This is a demonstration of the Wilson M&V Intelligence chatbot interface. 
-            This chatbot is meant to demonstrate the concept of persona-based conversations.  In a real-world application, the chatbot would be integrated with a backend system to provide customized real-time responses and data. I hope to get Steve to build this out in the future.
+            This chatbot is meant to demonstrate the concept of persona-based conversations.  In a real-world application, the chatbot would be integrated with a backend system to provide customized real-time responses and data. I hope to get Steve to build this out in the future. 
+            Meanwhile, you many want to visit 
+            https://expert-test-app-barcross.replit.app/chat
+            
       
           </p>
         </div>
