@@ -50,20 +50,137 @@ export function AnalyticsDashboard({ onClose }: AnalyticsDashboardProps) {
         fetch('/api/analytics?type=popular-queries&limit=10')
       ])
 
-      const overview = await overviewRes.json()
-      const queries = await queriesRes.json()
+      if (overviewRes.ok && queriesRes.ok) {
+        const overview = await overviewRes.json()
+        const queries = await queriesRes.json()
 
-      setData({
-        stats: overview.stats,
-        analytics: overview.analytics,
-        queries: queries.queries
-      })
+        setData({
+          stats: overview.stats,
+          analytics: overview.analytics,
+          queries: queries.queries
+        })
+      } else {
+        // Fallback to mock data if database is unavailable
+        setData(getMockAnalyticsData())
+      }
     } catch (error) {
-      console.error('Failed to fetch analytics:', error)
+      console.error('Failed to fetch analytics, using mock data:', error)
+      // Use mock data as fallback
+      setData(getMockAnalyticsData())
     } finally {
       setLoading(false)
     }
   }
+
+  const getMockAnalyticsData = () => ({
+    stats: {
+      total_sessions: 847,
+      total_messages: 3421,
+      avg_messages_per_session: 4.0,
+      unique_personas: 6,
+      unique_regions: 5
+    },
+    analytics: [
+      {
+        date: new Date().toISOString().split('T')[0],
+        total_sessions: 45,
+        total_messages: 178,
+        avg_messages_per_session: 3.96,
+        top_persona: 'M&V Specialist',
+        top_region: 'North America'
+      },
+      {
+        date: new Date(Date.now() - 86400000).toISOString().split('T')[0],
+        total_sessions: 52,
+        total_messages: 203,
+        avg_messages_per_session: 3.9,
+        top_persona: 'Business Analyst',
+        top_region: 'Europe'
+      },
+      {
+        date: new Date(Date.now() - 172800000).toISOString().split('T')[0],
+        total_sessions: 38,
+        total_messages: 156,
+        avg_messages_per_session: 4.1,
+        top_persona: 'Policy Maker',
+        top_region: 'North America'
+      },
+      {
+        date: new Date(Date.now() - 259200000).toISOString().split('T')[0],
+        total_sessions: 41,
+        total_messages: 167,
+        avg_messages_per_session: 4.07,
+        top_persona: 'Student',
+        top_region: 'Asia Pacific'
+      },
+      {
+        date: new Date(Date.now() - 345600000).toISOString().split('T')[0],
+        total_sessions: 33,
+        total_messages: 134,
+        avg_messages_per_session: 4.06,
+        top_persona: 'Consultant',
+        top_region: 'Europe'
+      },
+      {
+        date: new Date(Date.now() - 432000000).toISOString().split('T')[0],
+        total_sessions: 29,
+        total_messages: 118,
+        avg_messages_per_session: 4.07,
+        top_persona: 'Legal Professional',
+        top_region: 'North America'
+      },
+      {
+        date: new Date(Date.now() - 518400000).toISOString().split('T')[0],
+        total_sessions: 35,
+        total_messages: 142,
+        avg_messages_per_session: 4.06,
+        top_persona: 'M&V Specialist',
+        top_region: 'Latin America'
+      }
+    ],
+    queries: [
+      {
+        content: "How do I measure the impact of our energy efficiency program?",
+        frequency: 23,
+        avg_response_time: 850
+      },
+      {
+        content: "What's the difference between measurement and verification?",
+        frequency: 19,
+        avg_response_time: 720
+      },
+      {
+        content: "Can you help me design a randomized controlled trial?",
+        frequency: 17,
+        avg_response_time: 950
+      },
+      {
+        content: "How do I calculate baseline energy consumption?",
+        frequency: 15,
+        avg_response_time: 680
+      },
+      {
+        content: "What are the IPMVP protocols for M&V?",
+        frequency: 14,
+        avg_response_time: 780
+      },
+      {
+        content: "How do I handle counterfactual analysis in policy evaluation?",
+        frequency: 12,
+        avg_response_time: 1120
+      },
+      {
+        content: "What statistical methods work best for impact evaluation?",
+        frequency: 11,
+        avg_response_time: 890
+      },
+      {
+        content: "How do I account for external factors in M&V studies?",
+        frequency: 10,
+        avg_response_time: 760
+      }
+    ]
+  })
 
   if (loading) {
     return (
@@ -222,11 +339,12 @@ export function AnalyticsDashboard({ onClose }: AnalyticsDashboardProps) {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-            <span className="text-sm">PostgreSQL database connected and operational</span>
+            <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+            <span className="text-sm">Using mock analytics data (database not connected)</span>
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            All chat messages and session data are being stored for analytics and future improvements.
+            This demonstration shows sample analytics data. In a production environment, 
+            this would connect to a PostgreSQL database to show real usage statistics.
           </p>
         </CardContent>
       </Card>
