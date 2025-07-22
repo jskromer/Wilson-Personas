@@ -3,38 +3,55 @@
 import { useState } from "react"
 import { PersonaSelection } from "@/components/persona-selection"
 import { ChatInterface } from "@/components/chat-interface"
+import { AnalyticsDashboard } from "@/components/analytics-dashboard"
 
-export default function HomePage() {
-  const [selectedPersona, setSelectedPersona] = useState<string | null>(null)
-  const [selectedRegion, setSelectedRegion] = useState("North America")
-  const [selectedLanguage, setSelectedLanguage] = useState("English")
+interface ChatSession {
+  persona: string
+  region: string
+  language: string
+}
+
+export default function Page() {
+  const [chatSession, setChatSession] = useState<ChatSession | null>(null)
+  const [showAnalytics, setShowAnalytics] = useState(false)
 
   const handleStartChat = (persona: string, region: string, language: string) => {
-    setSelectedPersona(persona)
-    setSelectedRegion(region)
-    setSelectedLanguage(language)
+    setChatSession({ persona, region, language })
   }
 
   const handleBackToSelection = () => {
-    setSelectedPersona(null)
+    setChatSession(null)
+  }
+
+  const handleShowAnalytics = () => {
+    setShowAnalytics(true)
+  }
+
+  const handleCloseAnalytics = () => {
+    setShowAnalytics(false)
+  }
+
+  if (showAnalytics) {
+    return <AnalyticsDashboard onClose={handleCloseAnalytics} />
+  }
+
+  if (chatSession) {
+    return (
+      <ChatInterface
+        persona={chatSession.persona}
+        region={chatSession.region}
+        language={chatSession.language}
+        onBack={handleBackToSelection}
+      />
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {!selectedPersona ? (
-        <PersonaSelection
-          onStartChat={handleStartChat}
-          selectedRegion={selectedRegion}
-          selectedLanguage={selectedLanguage}
-        />
-      ) : (
-        <ChatInterface
-          persona={selectedPersona}
-          region={selectedRegion}
-          language={selectedLanguage}
-          onBack={handleBackToSelection}
-        />
-      )}
-    </div>
+    <PersonaSelection
+      onStartChat={handleStartChat}
+      selectedRegion="North America"
+      selectedLanguage="English"
+      onShowAnalytics={handleShowAnalytics}
+    />
   )
 }

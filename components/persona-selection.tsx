@@ -10,6 +10,7 @@ interface PersonaSelectionProps {
   onStartChat: (persona: string, region: string, language: string) => void
   selectedRegion: string
   selectedLanguage: string
+  onShowAnalytics?: () => void
 }
 
 const personas = [
@@ -63,7 +64,7 @@ const personas = [
   },
 ]
 
-export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage }: PersonaSelectionProps) {
+export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage, onShowAnalytics }: PersonaSelectionProps) {
   const [selectedPersona, setSelectedPersona] = useState("mv-specialist")
   const [region, setRegion] = useState(selectedRegion)
   const [language, setLanguage] = useState(selectedLanguage)
@@ -79,9 +80,22 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <img src="/images/wilson.png" alt="Wilson" className="h-8 w-8" />
-          <h1 className="text-3xl font-bold text-gray-900">Ask Wilson</h1>
+        <div className="flex items-center justify-between mb-4">
+          <div></div>
+          <div className="flex items-center gap-2">
+            <img src="/images/wilson.png" alt="Wilson" className="h-8 w-8" />
+            <h1 className="text-3xl font-bold text-gray-900">Ask Wilson</h1>
+          </div>
+          {onShowAnalytics && (
+            <Button
+              onClick={onShowAnalytics}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </Button>
+          )}
         </div>
         <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant.  Select your language, region and role - then access the customized chatbot below. </p>
         
