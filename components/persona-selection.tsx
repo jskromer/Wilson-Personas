@@ -124,6 +124,19 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
             >
               Wilson Knows M&V
             </a>
+            <br />
+            <a 
+              href="https://wilson-advice.replit.app" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-blue-600 hover:text-blue-800 underline font-medium"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open('https://wilson-advice.replit.app', '_blank');
+              }}
+            >
+              One Smart Pup
+            </a>
           </p>
         </div>
       </div>
