@@ -95,7 +95,8 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
           </div>
           <p className="text-red-700 text-sm">
             This is a demonstration of the Wilson M&V Intelligence chatbot interface. 
-            The system showcases persona-based conversations but requires API credentials to connect to a live AI service.
+            This chatbot is meant to demonstrate the concept of persona-based conversations.  In a real-world application, the chatbot would be integrated with a backend system to provide customized real-time responses and data. I hope to get Steve to build this out in the future.
+      
           </p>
         </div>
       </div>
