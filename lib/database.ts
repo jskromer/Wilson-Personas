@@ -7,11 +7,37 @@ const pool = new Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 10, // Maximum number of clients in the pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 5000,
 });
+
+// Test database connection
+export async function testDatabaseConnection() {
+  if (!process.env.DATABASE_URL) {
+    console.log('DATABASE_URL not configured. Please set up PostgreSQL database.');
+    return false;
+  }
+  
+  try {
+    const client = await pool.connect();
+    await client.query('SELECT NOW()');
+    client.release();
+    console.log('Database connection successful');
+    return true;
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    return false;
+  }
+}
 
 // Database schema initialization
 export async function initializeDatabase() {
+  // Check if database is available first
+  const isConnected = await testDatabaseConnection();
+  if (!isConnected) {
+    console.log('Skipping database initialization - no database connection');
+    return false;
+  }
+
   const client = await pool.connect();
   try {
     // Create tables if they don't exist
@@ -62,8 +88,10 @@ export async function initializeDatabase() {
     `);
 
     console.log('Database initialized successfully');
+    return true;
   } catch (error) {
     console.error('Error initializing database:', error);
+    return false;
   } finally {
     client.release();
   }

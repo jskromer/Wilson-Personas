@@ -23,8 +23,8 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now()
   
   try {
-    // Initialize database on first request
-    await initializeDatabase()
+    // Try to initialize database on first request
+    const dbInitialized = await initializeDatabase()
     
     const { 
       message, 
@@ -39,13 +39,23 @@ export async function POST(request: NextRequest) {
     // Generate session ID if not provided
     const currentSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-    // Create or update chat session in database
-    if (persona && region && language) {
-      await createChatSession(currentSessionId, persona, region, language)
+    // Create or update chat session in database (if available)
+    if (dbInitialized && persona && region && language) {
+      try {
+        await createChatSession(currentSessionId, persona, region, language)
+      } catch (error) {
+        console.log('Failed to create chat session:', error)
+      }
     }
 
-    // Save user message to database
-    await saveChatMessage(currentSessionId, 'user', message)
+    // Save user message to database (if available)
+    if (dbInitialized) {
+      try {
+        await saveChatMessage(currentSessionId, 'user', message)
+      } catch (error) {
+        console.log('Failed to save user message:', error)
+      }
+    }
 
     // Build context based on source
     let fullContext = context || ''
@@ -153,8 +163,14 @@ Context: ${fullContext}`,
     const responseTime = Date.now() - startTime
     const responseContent = data.choices?.[0]?.message?.content || data.response || data.message || "I'm here to help!"
     
-    // Save assistant response to database
-    await saveChatMessage(currentSessionId, 'assistant', responseContent, responseTime)
+    // Save assistant response to database (if available)
+    if (dbInitialized) {
+      try {
+        await saveChatMessage(currentSessionId, 'assistant', responseContent, responseTime)
+      } catch (error) {
+        console.log('Failed to save assistant message:', error)
+      }
+    }
 
     const chatResponse: ChatResponse = {
       response: responseContent,
