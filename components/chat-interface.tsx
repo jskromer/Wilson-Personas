@@ -6,8 +6,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Send, BarChart3 } from "lucide-react"
-import { AnalyticsDashboard } from "@/components/analytics-dashboard"
+import { ArrowLeft, Send } from "lucide-react"
 
 interface ChatInterfaceProps {
   persona: string
@@ -28,14 +27,12 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
     {
       id: "1",
       role: "assistant",
-      content: `Hello! I'm Wilson, your M&V Intelligence assistant, configured for ${persona} in ${region}. I'm connected to our unified chatbot system and ready to help with your questions.`,
+      content: `Hello! I'm Wilson, your M&V Intelligence assistant, configured for ${persona} in ${region}. I'm ready to help with your measurement and verification questions.`,
       timestamp: new Date(),
     },
   ])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [sessionId, setSessionId] = useState<string | null>(null)
-  const [showAnalytics, setShowAnalytics] = useState(false)
 
   const handleSendMessage = async () => {
     if (!input.trim()) return
@@ -54,54 +51,26 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
     const currentInput = input
     setInput("")
 
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: currentInput,
-          persona,
-          region,
-          language,
-          context: `M&V Intelligence conversation`,
-          source: 'mv-intelligence',
-          sessionId,
-        }),
-      })
+    // Simple demo response
+    setTimeout(() => {
+      const responses = [
+        `As a ${persona} in ${region}, I understand you're asking about: "${currentInput}". This is a demonstration response showing how Wilson would provide contextual answers based on your persona and region.`,
+        `Great question! From the perspective of ${persona} work in ${region}, here's how I would approach: "${currentInput}". In a real implementation, this would connect to advanced M&V analysis systems.`,
+        `Thank you for your question about "${currentInput}". As Wilson, configured for ${persona} in ${region}, I would typically provide detailed measurement and verification guidance here.`
+      ]
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to get response')
-      }
-
-      // Store session ID for continuity
-      if (data.sessionId && !sessionId) {
-        setSessionId(data.sessionId)
-      }
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.response || "I'm here to help with your M&V questions!",
+        content: randomResponse,
         timestamp: new Date(),
       }
 
       setMessages((prev) => [...prev, assistantMessage])
-    } catch (error) {
-      console.error('Chat API error:', error)
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: "Sorry, there was an error connecting to the chatbot. Please try again.",
-        timestamp: new Date(),
-      }
-      setMessages((prev) => [...prev, errorMessage])
-    } finally {
       setIsLoading(false)
-    }
+    }, 1000)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -109,10 +78,6 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
       e.preventDefault()
       handleSendMessage()
     }
-  }
-
-  if (showAnalytics) {
-    return <AnalyticsDashboard onClose={() => setShowAnalytics(false)} />
   }
 
   return (
@@ -126,23 +91,14 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
               Back to Selection
             </Button>
             <div className="flex items-center gap-2">
-              <img src="/images/wilson.png" alt="Wilson" className="h-6 w-6" />
+              <div className="h-6 w-6 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">W</span>
+              </div>
               <h1 className="text-xl font-semibold">Ask Wilson about M&V</h1>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowAnalytics(true)}
-              className="flex items-center gap-2"
-            >
-              <BarChart3 className="h-4 w-4" />
-              Analytics
-            </Button>
-            <div className="text-sm text-gray-600">
-              {persona} • {region} • {language}
-            </div>
+          <div className="text-sm text-gray-600">
+            {persona} • {region} • {language}
           </div>
         </div>
       </div>
@@ -166,8 +122,6 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
               </Card>
             </div>
           ))}
-
-          
 
           {isLoading && (
             <div className="flex justify-start">

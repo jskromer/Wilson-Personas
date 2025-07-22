@@ -1,6 +1,4 @@
-
 import { NextRequest, NextResponse } from 'next/server'
-import { createChatSession, saveChatMessage, initializeDatabase } from '@/lib/database'
 
 interface ChatRequest {
   message: string
@@ -8,7 +6,6 @@ interface ChatRequest {
   region?: string
   language?: string
   context?: string
-  source?: 'mv-intelligence' | 'other-chatbot'
   sessionId?: string
 }
 
@@ -16,175 +13,50 @@ interface ChatResponse {
   response: string
   sessionId: string
   timestamp: string
-  source: string
 }
 
 export async function POST(request: NextRequest) {
-  const startTime = Date.now()
-  
   try {
-    // Try to initialize database on first request
-    const dbInitialized = await initializeDatabase()
-    
     const { 
       message, 
       persona, 
       region, 
       language, 
-      context, 
-      source = 'mv-intelligence',
       sessionId 
     }: ChatRequest = await request.json()
 
     // Generate session ID if not provided
     const currentSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-    // Create or update chat session in database (if available)
-    if (dbInitialized && persona && region && language) {
-      try {
-        await createChatSession(currentSessionId, persona, region, language)
-      } catch (error) {
-        console.log('Failed to create chat session:', error)
-      }
-    }
+    // Simple demo response
+    const demoResponse = `Thank you for your question: "${message}"
 
-    // Save user message to database (if available)
-    if (dbInitialized) {
-      try {
-        await saveChatMessage(currentSessionId, 'user', message)
-      } catch (error) {
-        console.log('Failed to save user message:', error)
-      }
-    }
-
-    // Build context based on source
-    let fullContext = context || ''
-    if (source === 'mv-intelligence' && persona && region) {
-      fullContext = `I am a ${persona} working in ${region}. Language: ${language}. ${context || ''}`
-    }
-
-    // Check if API endpoint is configured and valid
-    const apiEndpoint = process.env.CHATBOT_API_ENDPOINT
-    let data: any
-
-    if (apiEndpoint && 
-        apiEndpoint !== 'YOUR_SHARED_API_ENDPOINT' && 
-        apiEndpoint.startsWith('http') && 
-        apiEndpoint.length > 10) {
-      
-      try {
-        // Call your shared chatbot API
-        const response = await fetch(apiEndpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.CHATBOT_API_KEY}`,
-            'X-Source-Application': source,
-          },
-          body: JSON.stringify({
-            model: "gpt-3.5-turbo",
-            messages: [
-              {
-                role: "system",
-                content: `You are Wilson, an M&V (Measurement & Verification) Intelligence assistant. ${fullContext}`
-              },
-              {
-                role: "user", 
-                content: message
-              }
-            ],
-            max_tokens: 500,
-            temperature: 0.7
-          }),
-        })
-
-        if (!response.ok) {
-          const errorText = await response.text()
-          console.log(`API endpoint responded with ${response.status}, using fallback`)
-          console.log('Request sent:', JSON.stringify({
-            url: apiEndpoint,
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': process.env.CHATBOT_API_KEY ? 'Bearer [REDACTED]' : 'None',
-              'X-Source-Application': source,
-            },
-            bodyKeys: ['message', 'context', 'sessionId', 'metadata']
-          }, null, 2))
-          console.log('Error response:', errorText)
-          throw new Error(`API request failed: ${response.status}`)
-        }
-
-        data = await response.json()
-      } catch (error) {
-        console.log('API call failed, using fallback response:', error)
-        // Fall through to fallback response
-        data = {
-          response: `Thank you for your question: "${message}"
-
-🤖 M&V Intelligence Assistant
-• Persona: ${persona}
-• Region: ${region}
-• Language: ${language}
-
-⚠️ Demo Mode Active
-Your API endpoint returned an error, so this is a demonstration response.
-
-To connect to your actual chatbot:
-• Check your CHATBOT_API_ENDPOINT in the Secrets tool
-• Ensure your other chatbot accepts POST requests at /api/chat
-• Verify the endpoint URL is correct
-
-Context: ${fullContext}`,
-          sessionId: currentSessionId
-        }
-      }
-    } else {
-      // Fallback response when API is not configured
-      data = {
-        response: `Thank you for your question: "${message}"
-
-🤖 M&V Intelligence Assistant
-• Persona: ${persona}
-• Region: ${region}
-• Language: ${language}
+🤖 Wilson M&V Intelligence Assistant
+• Persona: ${persona || 'General User'}
+• Region: ${region || 'Global'}
+• Language: ${language || 'English'}
 
 📋 Demo Mode
-This is a demonstration response. To connect to your actual chatbot API:
-• Configure CHATBOT_API_ENDPOINT in the Secrets tool
-• Add your API key if required
-• Test the connection
+This is a demonstration response. In a real implementation, Wilson would:
+- Analyze your question in the context of your persona and region
+- Provide specific M&V guidance and recommendations  
+- Access relevant databases and knowledge systems
+- Offer step-by-step implementation guidance
 
-Context: ${fullContext}`,
-        sessionId: currentSessionId
-      }
-    }
-
-    const responseTime = Date.now() - startTime
-    const responseContent = data.choices?.[0]?.message?.content || data.response || data.message || "I'm here to help!"
-    
-    // Save assistant response to database (if available)
-    if (dbInitialized) {
-      try {
-        await saveChatMessage(currentSessionId, 'assistant', responseContent, responseTime)
-      } catch (error) {
-        console.log('Failed to save assistant message:', error)
-      }
-    }
+Your question would be processed by advanced AI systems to provide contextual, professional-grade measurement and verification assistance.`
 
     const chatResponse: ChatResponse = {
-      response: responseContent,
+      response: demoResponse,
       sessionId: currentSessionId,
-      timestamp: new Date().toISOString(),
-      source
+      timestamp: new Date().toISOString()
     }
 
     return NextResponse.json(chatResponse)
   } catch (error) {
-    console.error('Unified Chat API error:', error)
+    console.error('Chat API error:', error)
     return NextResponse.json(
       { 
-        error: 'Failed to get response from chatbot',
+        error: 'Failed to process chat request',
         timestamp: new Date().toISOString() 
       },
       { status: 500 }
@@ -192,15 +64,11 @@ Context: ${fullContext}`,
   }
 }
 
-// GET endpoint for health check and API info
+// GET endpoint for health check
 export async function GET() {
   return NextResponse.json({
     status: 'active',
-    endpoints: {
-      chat: '/api/chat',
-      webhook: '/api/webhook'
-    },
-    supportedSources: ['mv-intelligence', 'other-chatbot'],
+    service: 'Wilson M&V Intelligence Chat API',
     timestamp: new Date().toISOString()
   })
 }
