@@ -112,7 +112,16 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
             This chatbot is meant to demonstrate the concept of persona-based conversations.  In a real-world application, the chatbot would be integrated with a backend system to provide customized real-time responses and data. I hope to get Steve to build this out in the future.
             <br />
             Meanwhile, you may want to visit{" "}
-            <a href="https://expert-test-app-barcross.replit.app/chat" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">
+            <a 
+              href="https://expert-test-app-barcross.replit.app/chat" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-blue-600 hover:text-blue-800 underline font-medium"
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open('https://expert-test-app-barcross.replit.app/chat', '_blank');
+              }}
+            >
               Wilson Knows M&V
             </a>
           </p>
