@@ -113,13 +113,13 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
             <br />
             Meanwhile, you may want to visit{" "}
             <a 
-              href="https://expert-test-app-barcross.replit.app/chat" 
+              href="https://wilson-expert.replit.app" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="text-blue-600 hover:text-blue-800 underline font-medium"
               onClick={(e) => {
                 e.stopPropagation();
-                window.open('https://expert-test-app-barcross.replit.app/chat', '_blank');
+                window.open('https://wilson-expert.replit.app', '_blank');
               }}
             >
               Wilson Knows M&V
