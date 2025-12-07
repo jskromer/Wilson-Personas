@@ -99,47 +99,7 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
         </div>
         <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant.  Select your language, region and role - then access the customized chatbot below. </p>
 
-        {/* Demo Notice */}
-        <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
-          <div className="flex items-center gap-2 justify-center mb-2">
-            <div className="w-5 h-6 rounded-full bg-blue-500 flex items-center justify-center">
-              <span className="text-white text-xs">ℹ️</span>
-            </div>
-            <h3 className="text-lg font-semibold text-blue-800">Demo Application</h3>
-          </div>
-          <p className="text-red-700 text-sm">
-            This is a demonstration of the Wilson M&V Intelligence chatbot interface.
-            This chatbot is meant to demonstrate the concept of persona-based conversations.  In a real-world application, the chatbot would be integrated with a backend system to provide customized real-time responses and data. I hope to get Steve to build this out in the future.
-            <br />
-            Meanwhile, you may want to visit{" "}
-            <a
-              href="https://wilson-expert.replit.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 underline font-medium"
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open('https://wilson-expert.replit.app', '_blank');
-              }}
-            >
-              Wilson Knows M&V
-            </a>
-            <br />
-            <a
-              href="https://wilson-advice.replit.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 underline font-medium"
-              onClick={(e) => {
-                e.stopPropagation();
-                window.open('https://wilson-advice.replit.app', '_blank');
-              }}
-            >
-              One Smart Pup
-            </a>
-          </p>
         </div>
-      </div>
 
       {/* Language and Region Selection */}
       <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
