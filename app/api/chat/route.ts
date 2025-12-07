@@ -45,7 +45,7 @@ export async function POST(req: Request) {
   try {
     console.log('Chat API called')
     const body = await req.json()
-    const { message, persona, region, language } = body
+    const { message, persona, region, language, sessionId } = body
 
     console.log('Request:', { message, persona, region, language })
 
