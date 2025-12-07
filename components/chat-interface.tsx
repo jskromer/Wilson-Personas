@@ -53,6 +53,8 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
 
     try {
       // Call the real Claude API
+      console.log('Sending message to API:', { persona, region, language, message: currentInput })
+      
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -66,12 +68,21 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
         }),
       })
 
+      console.log('API response status:', response.status)
+
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Failed to get response')
+        let errorMessage = 'Failed to get response'
+        try {
+          const error = await response.json()
+          errorMessage = error.error || errorMessage
+        } catch (e) {
+          errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        }
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()
+      console.log('API response data:', data)
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -88,7 +99,7 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `I apologize, but I encountered an error: ${error.message}. Please make sure your API key is configured correctly in the Secrets tool.`,
+        content: `I apologize, but I encountered an error: ${error.message}. Please check the browser console for more details.`,
         timestamp: new Date(),
       }
 

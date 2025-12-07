@@ -43,12 +43,16 @@ function mapToConfigKey(value: string): string {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Chat API: Received request')
     const body: ChatRequest = await request.json()
+    console.log('Chat API: Request body:', { persona: body.persona, region: body.region, language: body.language })
+    
     const { message, persona = 'M&V Specialist', region = 'North America', language = 'English', sessionId } = body
 
     // Check for API key
     const apiKey = process.env.ANTHROPIC_API_KEY
     if (!apiKey) {
+      console.error('Chat API: ANTHROPIC_API_KEY not found')
       return NextResponse.json(
         { 
           error: 'ANTHROPIC_API_KEY not configured. Please add it to your Secrets.',
@@ -57,6 +61,7 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+    console.log('Chat API: API key found')
 
     // Map display names to config keys
     const roleKey = mapToConfigKey(persona)
@@ -79,6 +84,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Call Claude API with Claude Opus 4.5 (latest, most capable model)
+    console.log('Chat API: Calling Claude API with message:', message.substring(0, 50) + '...')
     const claudeResponse = await anthropic.messages.create({
       model: 'claude-opus-4-20250514', // Claude Opus 4.5 - latest flagship model
       max_tokens: 8192, // Increased for more comprehensive M&V responses
@@ -91,6 +97,8 @@ export async function POST(request: NextRequest) {
       ]
     })
 
+    console.log('Chat API: Received response from Claude')
+
     // Extract the text response
     const responseText = claudeResponse.content[0].type === 'text' 
       ? claudeResponse.content[0].text 
@@ -102,6 +110,7 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString()
     }
 
+    console.log('Chat API: Sending response to client')
     return NextResponse.json(chatResponse)
   } catch (error: any) {
     console.error('Chat API error:', error)
