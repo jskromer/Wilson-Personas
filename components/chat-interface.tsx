@@ -51,26 +51,51 @@ export function ChatInterface({ persona, region, language, onBack }: ChatInterfa
     const currentInput = input
     setInput("")
 
-    // Simple demo response
-    setTimeout(() => {
-      const responses = [
-        `As a ${persona} in ${region}, I understand you're asking about: "${currentInput}". This is a demonstration response showing how Wilson would provide contextual answers based on your persona and region.`,
-        `Great question! From the perspective of ${persona} work in ${region}, here's how I would approach: "${currentInput}". In a real implementation, this would connect to advanced M&V analysis systems.`,
-        `Thank you for your question about "${currentInput}". As Wilson, configured for ${persona} in ${region}, I would typically provide detailed measurement and verification guidance here.`
-      ]
+    try {
+      // Call the real Claude API
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: currentInput,
+          persona: persona,
+          region: region,
+          language: language,
+        }),
+      })
 
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to get response')
+      }
+
+      const data = await response.json()
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: randomResponse,
+        content: data.response,
         timestamp: new Date(),
       }
 
       setMessages((prev) => [...prev, assistantMessage])
+    } catch (error: any) {
+      console.error('Chat error:', error)
+      
+      // Show error message to user
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: `I apologize, but I encountered an error: ${error.message}. Please make sure your API key is configured correctly in the Secrets tool.`,
+        timestamp: new Date(),
+      }
+
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
       setIsLoading(false)
-    }, 1000)
+    }
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
