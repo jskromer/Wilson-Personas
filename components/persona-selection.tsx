@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3, TrendingUp, Scale, Briefcase, GraduationCap, Building } from "lucide-react"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { Select } from "@/components/ui/select"
 
 interface PersonaSelectionProps {
   onStartChat: (persona: string, region: string, language: string) => void
@@ -146,22 +146,22 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
           <Select value={language} onValueChange={setLanguage} className="w-full">
-            <SelectItem value="English">English</SelectItem>
-            <SelectItem value="Spanish">Español</SelectItem>
-            <SelectItem value="French">Français</SelectItem>
-            <SelectItem value="German">Deutsch</SelectItem>
-            <SelectItem value="Japanese">日本語</SelectItem>
-            <SelectItem value="Chinese">中文</SelectItem>
+            <option value="English">English</option>
+            <option value="Spanish">Español</option>
+            <option value="French">Français</option>
+            <option value="German">Deutsch</option>
+            <option value="Japanese">日本語</option>
+            <option value="Chinese">中文</option>
           </Select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
           <Select value={region} onValueChange={setRegion} className="w-full">
-            <SelectItem value="North America">North America</SelectItem>
-            <SelectItem value="Europe">Europe</SelectItem>
-            <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
-            <SelectItem value="Latin America">Latin America</SelectItem>
-            <SelectItem value="Africa">Africa</SelectItem>
+            <option value="North America">North America</option>
+            <option value="Europe">Europe</option>
+            <option value="Asia Pacific">Asia Pacific</option>
+            <option value="Latin America">Latin America</option>
+            <option value="Africa">Africa</option>
           </Select>
         </div>
       </div>

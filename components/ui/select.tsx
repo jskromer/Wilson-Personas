@@ -4,36 +4,38 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
-// Simplified select component using native HTML select
-const Select = React.forwardRef<
-  HTMLSelectElement,
-  React.SelectHTMLAttributes<HTMLSelectElement> & {
-    onValueChange?: (value: string) => void
-  }
->(({ className, children, onValueChange, ...props }, ref) => {
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (onValueChange) {
-      onValueChange(e.target.value)
-    }
-    if (props.onChange) {
-      props.onChange(e)
-    }
-  }
+// Simple Select component using native HTML select
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  onValueChange?: (value: string) => void
+}
 
-  return (
-    <select
-      ref={ref}
-      className={cn(
-        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-        className
-      )}
-      onChange={handleChange}
-      {...props}
-    >
-      {children}
-    </select>
-  )
-})
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
+  ({ className, children, onValueChange, value, ...props }, ref) => {
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      if (onValueChange) {
+        onValueChange(e.target.value)
+      }
+      if (props.onChange) {
+        props.onChange(e)
+      }
+    }
+
+    return (
+      <select
+        ref={ref}
+        value={value}
+        className={cn(
+          "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          className
+        )}
+        onChange={handleChange}
+        {...props}
+      >
+        {children}
+      </select>
+    )
+  }
+)
 Select.displayName = "Select"
 
 const SelectTrigger = Select
