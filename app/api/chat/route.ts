@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { buildSystemPrompt } from '@/lib/persona-config'
@@ -79,10 +78,10 @@ export async function POST(request: NextRequest) {
       apiKey: apiKey,
     })
 
-    // Call Claude API
+    // Call Claude API with Claude Opus 4.5 (latest, most capable model)
     const claudeResponse = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 2048,
+      model: 'claude-opus-4-20250514', // Claude Opus 4.5 - latest flagship model
+      max_tokens: 8192, // Increased for more comprehensive M&V responses
       system: systemPrompt,
       messages: [
         {
@@ -106,7 +105,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(chatResponse)
   } catch (error: any) {
     console.error('Chat API error:', error)
-    
+
     // Handle specific Anthropic errors
     if (error?.status === 401) {
       return NextResponse.json(
@@ -133,7 +132,7 @@ export async function GET() {
   return NextResponse.json({
     status: 'active',
     service: 'Wilson M&V Intelligence Chat API (Claude)',
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-opus-4-20250514',
     timestamp: new Date().toISOString()
   })
 }
