@@ -22,6 +22,12 @@ const nextConfig = {
       },
     ]
   },
+  // Configure Next.js to use port 5000
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '2mb',
+    },
+  },
 }
 
 export default nextConfig
