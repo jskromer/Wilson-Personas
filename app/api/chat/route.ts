@@ -1,4 +1,7 @@
+
 import { NextRequest, NextResponse } from 'next/server'
+import Anthropic from '@anthropic-ai/sdk'
+import { buildSystemPrompt } from '@/lib/persona-config'
 
 interface ChatRequest {
   message: string
@@ -14,8 +17,6 @@ interface ChatResponse {
   sessionId: string
   timestamp: string
 }
-
-import { buildSystemPrompt } from '@/lib/persona-config'
 
 // Helper function to map display names to config keys
 function mapToConfigKey(value: string): string {
@@ -46,6 +47,18 @@ export async function POST(request: NextRequest) {
     const body: ChatRequest = await request.json()
     const { message, persona = 'M&V Specialist', region = 'North America', language = 'English', sessionId } = body
 
+    // Check for API key
+    const apiKey = process.env.ANTHROPIC_API_KEY
+    if (!apiKey) {
+      return NextResponse.json(
+        { 
+          error: 'ANTHROPIC_API_KEY not configured. Please add it to your Secrets.',
+          timestamp: new Date().toISOString() 
+        },
+        { status: 500 }
+      )
+    }
+
     // Map display names to config keys
     const roleKey = mapToConfigKey(persona)
     const regionKey = mapToConfigKey(region)
@@ -61,36 +74,53 @@ export async function POST(request: NextRequest) {
     // Generate session ID if not provided
     const currentSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-    // Simple demo response
-    const demoResponse = `Thank you for your question: "${message}"
+    // Initialize Anthropic client
+    const anthropic = new Anthropic({
+      apiKey: apiKey,
+    })
 
-🤖 Wilson M&V Intelligence Assistant
-• Persona: ${persona || 'General User'}
-• Region: ${region || 'Global'}
-• Language: ${language || 'English'}
+    // Call Claude API
+    const claudeResponse = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 2048,
+      system: systemPrompt,
+      messages: [
+        {
+          role: 'user',
+          content: message
+        }
+      ]
+    })
 
-📋 Demo Mode
-This is a demonstration response. In a real implementation, Wilson would:
-- Analyze your question in the context of your persona and region
-- Provide specific M&V guidance and recommendations  
-- Access relevant databases and knowledge systems
-- Offer step-by-step implementation guidance
-- Utilize the following system prompt: "${systemPrompt}"
-
-Your question would be processed by advanced AI systems to provide contextual, professional-grade measurement and verification assistance.`
+    // Extract the text response
+    const responseText = claudeResponse.content[0].type === 'text' 
+      ? claudeResponse.content[0].text 
+      : 'Unable to generate response'
 
     const chatResponse: ChatResponse = {
-      response: demoResponse,
+      response: responseText,
       sessionId: currentSessionId,
       timestamp: new Date().toISOString()
     }
 
     return NextResponse.json(chatResponse)
-  } catch (error) {
+  } catch (error: any) {
     console.error('Chat API error:', error)
+    
+    // Handle specific Anthropic errors
+    if (error?.status === 401) {
+      return NextResponse.json(
+        { 
+          error: 'Invalid ANTHROPIC_API_KEY. Please check your API key in Secrets.',
+          timestamp: new Date().toISOString() 
+        },
+        { status: 401 }
+      )
+    }
+
     return NextResponse.json(
       { 
-        error: 'Failed to process chat request',
+        error: error?.message || 'Failed to process chat request',
         timestamp: new Date().toISOString() 
       },
       { status: 500 }
@@ -102,7 +132,8 @@ Your question would be processed by advanced AI systems to provide contextual, p
 export async function GET() {
   return NextResponse.json({
     status: 'active',
-    service: 'Wilson M&V Intelligence Chat API',
+    service: 'Wilson M&V Intelligence Chat API (Claude)',
+    model: 'claude-3-5-sonnet-20241022',
     timestamp: new Date().toISOString()
   })
 }
