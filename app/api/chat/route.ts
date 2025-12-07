@@ -15,32 +15,47 @@ interface ChatResponse {
   timestamp: string
 }
 
-// Helper function to build a context-aware system prompt
-function buildSystemPrompt({ role, region, language }: { role: string; region: string; language: string }): string {
-  return `You are Wilson, a Measurement and Verification (M&V) Intelligence Assistant.
-Your goal is to provide expert M&V guidance and recommendations.
-You are interacting with a user who is a ${role}.
-The user is located in ${region} and prefers to communicate in ${language}.
-Please tailor your responses to be relevant to their role, location, and preferred language.
-Be professional, accurate, and helpful.
-When providing M&V guidance, ensure it aligns with industry best practices and any relevant regional standards.
-If a specific M&V task requires more information, ask clarifying questions.
-Do not invent information; if you don't know something, state that clearly.
-Your responses should be clear, concise, and actionable.
-If the user's request is ambiguous, seek clarification before providing a detailed response.
-Ensure all responses are in ${language}.`
+import { buildSystemPrompt } from '@/lib/persona-config'
+
+// Helper function to map display names to config keys
+function mapToConfigKey(value: string): string {
+  const mapping: { [key: string]: string } = {
+    'M&V Specialist': 'mv-specialist',
+    'Business Analyst': 'business-analyst',
+    'Policy Maker': 'policy-maker',
+    'Legal Professional': 'legal-professional',
+    'Consultant': 'consultant',
+    'Student': 'student',
+    'North America': 'north-america',
+    'Europe': 'europe',
+    'Asia Pacific': 'asia-pacific',
+    'Latin America': 'latin-america',
+    'Africa': 'africa',
+    'English': 'english',
+    'Spanish': 'spanish',
+    'French': 'french',
+    'German': 'german',
+    'Japanese': 'japanese',
+    'Chinese': 'chinese'
+  }
+  return mapping[value] || value.toLowerCase().replace(/\s+/g, '-')
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json()
-    const { message, persona = 'mv-specialist', region = 'north-america', language = 'english', sessionId } = body
+    const { message, persona = 'M&V Specialist', region = 'North America', language = 'English', sessionId } = body
 
-    // Build context-aware system prompt
+    // Map display names to config keys
+    const roleKey = mapToConfigKey(persona)
+    const regionKey = mapToConfigKey(region)
+    const languageKey = mapToConfigKey(language)
+
+    // Build context-aware system prompt using persona config
     const systemPrompt = buildSystemPrompt({
-      role: persona,
-      region: region,
-      language: language
+      role: roleKey,
+      region: regionKey,
+      language: languageKey
     })
 
     // Generate session ID if not provided

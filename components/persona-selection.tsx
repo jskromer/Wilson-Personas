@@ -141,37 +141,27 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
         </div>
       </div>
 
-      {/* Language and Region Selection - Updated to use Select components */}
+      {/* Language and Region Selection */}
       <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
-          <Select value={language} onValueChange={setLanguage}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Choose your language..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="English">English</SelectItem>
-              <SelectItem value="Spanish">Español</SelectItem>
-              <SelectItem value="French">Français</SelectItem>
-              <SelectItem value="German">Deutsch</SelectItem>
-              <SelectItem value="Japanese">日本語</SelectItem>
-              <SelectItem value="Chinese">中文</SelectItem>
-            </SelectContent>
+          <Select value={language} onValueChange={setLanguage} className="w-full">
+            <SelectItem value="English">English</SelectItem>
+            <SelectItem value="Spanish">Español</SelectItem>
+            <SelectItem value="French">Français</SelectItem>
+            <SelectItem value="German">Deutsch</SelectItem>
+            <SelectItem value="Japanese">日本語</SelectItem>
+            <SelectItem value="Chinese">中文</SelectItem>
           </Select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
-          <Select value={region} onValueChange={setRegion}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Choose your region..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="North America">North America</SelectItem>
-              <SelectItem value="Europe">Europe</SelectItem>
-              <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
-              <SelectItem value="Latin America">Latin America</SelectItem>
-              <SelectItem value="Africa">Africa</SelectItem>
-            </SelectContent>
+          <Select value={region} onValueChange={setRegion} className="w-full">
+            <SelectItem value="North America">North America</SelectItem>
+            <SelectItem value="Europe">Europe</SelectItem>
+            <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
+            <SelectItem value="Latin America">Latin America</SelectItem>
+            <SelectItem value="Africa">Africa</SelectItem>
           </Select>
         </div>
       </div>
