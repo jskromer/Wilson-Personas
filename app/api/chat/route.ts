@@ -15,15 +15,33 @@ interface ChatResponse {
   timestamp: string
 }
 
+// Helper function to build a context-aware system prompt
+function buildSystemPrompt({ role, region, language }: { role: string; region: string; language: string }): string {
+  return `You are Wilson, a Measurement and Verification (M&V) Intelligence Assistant.
+Your goal is to provide expert M&V guidance and recommendations.
+You are interacting with a user who is a ${role}.
+The user is located in ${region} and prefers to communicate in ${language}.
+Please tailor your responses to be relevant to their role, location, and preferred language.
+Be professional, accurate, and helpful.
+When providing M&V guidance, ensure it aligns with industry best practices and any relevant regional standards.
+If a specific M&V task requires more information, ask clarifying questions.
+Do not invent information; if you don't know something, state that clearly.
+Your responses should be clear, concise, and actionable.
+If the user's request is ambiguous, seek clarification before providing a detailed response.
+Ensure all responses are in ${language}.`
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { 
-      message, 
-      persona, 
-      region, 
-      language, 
-      sessionId 
-    }: ChatRequest = await request.json()
+    const body: ChatRequest = await request.json()
+    const { message, persona = 'mv-specialist', region = 'north-america', language = 'english', sessionId } = body
+
+    // Build context-aware system prompt
+    const systemPrompt = buildSystemPrompt({
+      role: persona,
+      region: region,
+      language: language
+    })
 
     // Generate session ID if not provided
     const currentSessionId = sessionId || `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -42,6 +60,7 @@ This is a demonstration response. In a real implementation, Wilson would:
 - Provide specific M&V guidance and recommendations  
 - Access relevant databases and knowledge systems
 - Offer step-by-step implementation guidance
+- Utilize the following system prompt: "${systemPrompt}"
 
 Your question would be processed by advanced AI systems to provide contextual, professional-grade measurement and verification assistance.`
 

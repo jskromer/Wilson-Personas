@@ -1,10 +1,10 @@
-
 "use client"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BarChart3, TrendingUp, Scale, Briefcase, GraduationCap, Building } from "lucide-react"
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 
 interface PersonaSelectionProps {
   onStartChat: (persona: string, region: string, language: string) => void
@@ -98,24 +98,24 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
           )}
         </div>
         <p className="text-lg text-gray-600">Your AI-powered measurement and verification assistant.  Select your language, region and role - then access the customized chatbot below. </p>
-        
+
         {/* Demo Notice */}
         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
           <div className="flex items-center gap-2 justify-center mb-2">
-            <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center">
+            <div className="w-5 h-6 rounded-full bg-blue-500 flex items-center justify-center">
               <span className="text-white text-xs">ℹ️</span>
             </div>
             <h3 className="text-lg font-semibold text-blue-800">Demo Application</h3>
           </div>
           <p className="text-red-700 text-sm">
-            This is a demonstration of the Wilson M&V Intelligence chatbot interface. 
+            This is a demonstration of the Wilson M&V Intelligence chatbot interface.
             This chatbot is meant to demonstrate the concept of persona-based conversations.  In a real-world application, the chatbot would be integrated with a backend system to provide customized real-time responses and data. I hope to get Steve to build this out in the future.
             <br />
             Meanwhile, you may want to visit{" "}
-            <a 
-              href="https://wilson-expert.replit.app" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://wilson-expert.replit.app"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-600 hover:text-blue-800 underline font-medium"
               onClick={(e) => {
                 e.stopPropagation();
@@ -125,10 +125,10 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
               Wilson Knows M&V
             </a>
             <br />
-            <a 
-              href="https://wilson-advice.replit.app" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://wilson-advice.replit.app"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-blue-600 hover:text-blue-800 underline font-medium"
               onClick={(e) => {
                 e.stopPropagation();
@@ -141,36 +141,41 @@ export function PersonaSelection({ onStartChat, selectedRegion, selectedLanguage
         </div>
       </div>
 
-      {/* Language and Region Selection */}
-      <div className="mb-8 flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
+      {/* Language and Region Selection - Updated to use Select components */}
+      <div className="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Language:</label>
-          <select 
-            value={language} 
-            onChange={(e) => setLanguage(e.target.value)}
-            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="English">English</option>
-            <option value="Spanish">Spanish</option>
-            <option value="French">French</option>
-            <option value="German">German</option>
-          </select>
+          <Select value={language} onValueChange={setLanguage}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Choose your language..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="English">English</SelectItem>
+              <SelectItem value="Spanish">Español</SelectItem>
+              <SelectItem value="French">Français</SelectItem>
+              <SelectItem value="German">Deutsch</SelectItem>
+              <SelectItem value="Japanese">日本語</SelectItem>
+              <SelectItem value="Chinese">中文</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <div className="flex-1">
+        <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Region:</label>
-          <select 
-            value={region} 
-            onChange={(e) => setRegion(e.target.value)}
-            className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <option value="North America">North America</option>
-            <option value="Europe">Europe</option>
-            <option value="Asia Pacific">Asia Pacific</option>
-            <option value="Latin America">Latin America</option>
-            <option value="Africa">Africa</option>
-          </select>
+          <Select value={region} onValueChange={setRegion}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Choose your region..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="North America">North America</SelectItem>
+              <SelectItem value="Europe">Europe</SelectItem>
+              <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
+              <SelectItem value="Latin America">Latin America</SelectItem>
+              <SelectItem value="Africa">Africa</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
+
 
       {/* Persona Selection */}
       <div className="mb-8">
