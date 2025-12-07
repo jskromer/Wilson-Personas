@@ -41,23 +41,27 @@ function mapToConfigKey(value: string): string {
   return mapping[value] || value.toLowerCase().replace(/\s+/g, '-')
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(req: Request) {
   try {
-    console.log('Chat API: Received request')
-    const body: ChatRequest = await request.json()
-    console.log('Chat API: Request body:', { persona: body.persona, region: body.region, language: body.language })
-    
-    const { message, persona = 'M&V Specialist', region = 'North America', language = 'English', sessionId } = body
+    console.log('Chat API called')
+    const body = await req.json()
+    const { message, persona, region, language } = body
 
-    // Check for API key
+    console.log('Request:', { message, persona, region, language })
+
+    if (!message || !persona || !region || !language) {
+      console.error('Missing required fields')
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      )
+    }
+
     const apiKey = process.env.ANTHROPIC_API_KEY
     if (!apiKey) {
-      console.error('Chat API: ANTHROPIC_API_KEY not found')
+      console.error('ANTHROPIC_API_KEY not configured')
       return NextResponse.json(
-        { 
-          error: 'ANTHROPIC_API_KEY not configured. Please add it to your Secrets.',
-          timestamp: new Date().toISOString() 
-        },
+        { error: 'ANTHROPIC_API_KEY not configured. Please add it in the Secrets tool.' },
         { status: 500 }
       )
     }
