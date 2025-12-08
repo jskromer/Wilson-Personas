@@ -28,10 +28,8 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
-  // Allow Replit dev URL
-  allowedDevOrigins: [
-    '461a9e52-201d-4290-a704-49f34f0a1413-00-2xu08235d2adw.riker.replit.dev'
-  ],
+  // Allow all dev origins for Replit
+  allowedDevOrigins: ['*'],
 }
 
 export default nextConfig

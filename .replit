@@ -10,6 +10,14 @@ build = ["npm", "run", "build"]
 deploymentTarget = "autoscale"
 
 [[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 36905
+externalPort = 3000
+
+[[ports]]
 localPort = 5000
 externalPort = 80
 
@@ -32,10 +40,10 @@ args = "Dev Server"
 name = "Dev Server"
 author = "agent"
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
